@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialConnect - Your Social Network</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <span class="logo-text">
+                        SocialConnect
+                    </span>
+                </div>
+
+                <!-- Navigation Links (Hidden on mobile) -->
+                <div class="nav-links">
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#about">About Us</a>
+                    <a href="#contact">Contact</a>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="nav-actions">
+                    <button onclick="showLoginModal()" class="btn btn-secondary">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Sign In
+                    </button>
+                    <button onclick="showRegisterModal()" class="btn btn-primary">
+                        <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>
+                        Sign Up
+                    </button>
+                    <!-- Mobile menu button -->
+                    <button id="mobileMenuToggle" class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact</a>
+            <button onclick="showLoginModal()" class="form-link" style="display: block; width: 100%; text-align: left; padding: 0.75rem 0; background: none; border: none;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                Sign In
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-grid">
+                <!-- Left Content -->
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Connect with the
+                        <span class="gradient-text">
+                            World
+                        </span>
+                    </h1>
+                    <p class="hero-description">
+                        Discover a new way to connect, share, and grow with your community. 
+                        Post across multiple social networks, schedule your content, and stay always connected.
+                    </p>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="hero-buttons">
+                        <button onclick="showRegisterModal()" class="btn btn-primary btn-lg">
+                            <i class="fas fa-rocket" style="margin-right: 0.75rem;"></i>
+                            Get Started
+                        </button>
+                        <button class="btn btn-secondary btn-lg">
+                            <i class="fas fa-play" style="margin-right: 0.75rem;"></i>
+                            Watch Demo
+                        </button>
+                    </div>
+
+                    <!-- Social Proof -->
+                    <div class="social-proof">
+                        <div class="social-proof-item">
+                            <span class="social-proof-number counter" data-target="10">0</span>
+                            <div>K+ Active Users</div>
+                        </div>
+                        <div class="social-proof-item">
+                            <span class="social-proof-number counter" data-target="50">0</span>
+                            <div>K+ Posts Published</div>
+                        </div>
+                        <div class="social-proof-item">
+                            <span class="social-proof-number counter" data-target="99">0</span>
+                            <div>% Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content - Interactive Elements -->
+                <div class="hero-mockup">
+                    <!-- Main Device Mockup -->
+                    <div>
+                        <!-- Phone Frame -->
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <!-- Status Bar -->
+                                <div class="status-bar">
+                                    <span>9:41</span>
+                                    <div>
+                                        <i class="fas fa-signal" style="margin-right: 0.25rem;"></i>
+                                        <i class="fas fa-wifi" style="margin-right: 0.25rem;"></i>
+                                        <i class="fas fa-battery-three-quarters"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- App Content -->
+                                <div class="app-content">
+                                    <!-- Header -->
+                                    <div class="app-header">
+                                        <h3 class="app-title">SocialConnect</h3>
+                                        <div class="app-avatar"></div>
+                                    </div>
+                                    
+                                    <!-- Post Cards -->
+                                    <div class="post-cards">
+                                        <div class="post-card">
+                                            <div class="post-header">
+                                                <div class="post-avatar" style="background: #3b82f6;"></div>
+                                                <span class="post-author">John Doe</span>
+                                            </div>
+                                            <p class="post-content">Sharing amazing moments! 📸</p>
+                                            <div class="post-actions">
+                                                <span><i class="fas fa-heart" style="margin-right: 0.25rem;"></i>24</span>
+                                                <span><i class="fas fa-comment" style="margin-right: 0.25rem;"></i>8</span>
+                                                <span><i class="fas fa-share" style="margin-right: 0.25rem;"></i>3</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="post-card">
+                                            <div class="post-header">
+                                                <div class="post-avatar" style="background: #10b981;"></div>
+                                                <span class="post-author">Jane Smith</span>
+                                            </div>
+                                            <p class="post-content">New project in development 🚀</p>
+                                            <div class="post-actions">
+                                                <span><i class="fas fa-heart" style="margin-right: 0.25rem;"></i>42</span>
+                                                <span><i class="fas fa-comment" style="margin-right: 0.25rem;"></i>15</span>
+                                                <span><i class="fas fa-share" style="margin-right: 0.25rem;"></i>7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Elements -->
+                        <div class="floating-heart">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        
+                        <div class="floating-comment">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        
+                        <div class="floating-share">
+                            <i class="fas fa-share"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="features-container">
+            <div class="features-header">
+                <h2 class="features-title">
+                    Amazing
+                    <span class="gradient-text">
+                        Features
+                    </span>
+                </h2>
+                <p class="features-description">
+                    Discover everything you can do with SocialConnect
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Scheduling</h3>
+                    <p class="feature-description">Schedule your posts for the perfect moment and reach your audience when they're most active.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Social Network</h3>
+                    <p class="feature-description">Post simultaneously on Facebook, Twitter, Instagram and more social networks from a single platform.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Analytics</h3>
+                    <p class="feature-description">Get detailed insights about your posts' performance and your audience growth.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-icon orange">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Team Management</h3>
+                    <p class="feature-description">Collaborate with your team, assign roles and manage permissions for efficient administration.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feature-icon indigo">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">AI Integration</h3>
+                    <p class="feature-description">Use artificial intelligence to optimize your content and find the best time to post.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feature-icon teal">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Total Security</h3>
+                    <p class="feature-description">We protect your data with enterprise-level encryption and two-factor authentication.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign In</h3>
+                <button onclick="closeModal('loginModal')" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" required class="form-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" required class="form-input" placeholder="••••••••">
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" name="remember" class="checkbox">
+                    <span>Remember me</span>
+                </div>
+                <div style="text-align: right; margin-bottom: 1rem;">
+                    <a href="#" class="form-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="form-footer">
+                <p>Don't have an account? 
+                    <button onclick="closeModal('loginModal'); showRegisterModal();" class="form-link" style="background: none; border: none;">Sign up here</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Account</h3>
+                <button onclick="closeModal('registerModal')" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" required class="form-input" placeholder="username123">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" required class="form-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" required class="form-input" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" name="confirmPassword" required class="form-input" placeholder="••••••••">
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" name="terms" required class="checkbox">
+                    <span>I accept the terms and conditions</span>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="form-footer">
+                <p>Already have an account? 
+                    <button onclick="closeModal('registerModal'); showLoginModal();" class="form-link" style="background: none; border: none;">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="footer-logo-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <span class="footer-logo-text">SocialConnect</span>
+            </div>
+            <p class="footer-description">Connect with the world in a different way</p>
+            <div class="footer-social">
+                <a href="#">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <p class="footer-copyright">&copy; 2025 SocialConnect. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="./scripts/auth.js"></script>
+    <script src="./scripts/main.js"></script>
+</body>
+</html>
