@@ -4,8 +4,8 @@ const API_BASE_URL = 'http://localhost:3001/api';
 // Authentication Service
 class AuthService {
     constructor() {
-        this.token = localStorage.getItem('authToken');
-        this.user = this.token ? JSON.parse(localStorage.getItem('user') || '{}') : null;
+        this.token = sessionStorage.getItem('authToken');
+        this.user = this.token ? JSON.parse(sessionStorage.getItem('currentUser') || '{}') : null;
     }
 
     // Register new user
@@ -27,13 +27,9 @@ class AuthService {
             }
 
             if (data.success) {
-                // Store token and user data
-                this.token = data.token;
-                this.user = data.user;
-                localStorage.setItem('authToken', this.token);
-                localStorage.setItem('user', JSON.stringify(this.user));
-                
-                return { success: true, message: data.message, user: data.user };
+                // Registration successful - do NOT store token/user data
+                // User should login separately after registration
+                return { success: true, message: data.message };
             } else {
                 return { success: false, message: data.message };
             }
@@ -68,10 +64,18 @@ class AuthService {
                 // Store token and user data
                 this.token = data.token;
                 this.user = data.user;
-                localStorage.setItem('authToken', this.token);
-                localStorage.setItem('user', JSON.stringify(this.user));
+                sessionStorage.setItem('authToken', this.token);
+                sessionStorage.setItem('currentUser', JSON.stringify(this.user));
                 
                 return { success: true, message: data.message, user: data.user };
+            } else if (data.requiresTwoFactor) {
+                // Two-factor authentication is required
+                return { 
+                    success: false, 
+                    requiresTwoFactor: true,
+                    email: data.email,
+                    message: data.message 
+                };
             } else {
                 return { success: false, message: data.message };
             }
@@ -88,11 +92,26 @@ class AuthService {
     logout() {
         this.token = null;
         this.user = null;
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('currentUser');
+        
+        // Clear any other session data
+        sessionStorage.clear();
+        
+        // Determine correct path to index.html based on current location
+        const currentPath = window.location.pathname;
+        let redirectPath;
+        
+        if (currentPath.includes('/views/')) {
+            // We're in a views subdirectory
+            redirectPath = '../index.html';
+        } else {
+            // We're already in the root
+            redirectPath = 'index.html';
+        }
         
         // Redirect to home page
-        window.location.reload();
+        window.location.href = redirectPath;
     }
 
     // Get user profile
@@ -123,7 +142,7 @@ class AuthService {
 
             if (data.success) {
                 this.user = data.user;
-                localStorage.setItem('user', JSON.stringify(this.user));
+                sessionStorage.setItem('currentUser', JSON.stringify(this.user));
                 return { success: true, user: data.user };
             } else {
                 return { success: false, message: data.message };
@@ -150,6 +169,43 @@ class AuthService {
     // Get auth token
     getToken() {
         return this.token;
+    }
+
+    // Verify two-factor login
+    async verifyTwoFactorLogin(credentials) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/2fa/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || `Server error: ${response.status}`);
+            }
+
+            if (data.success) {
+                // Store token and user data
+                this.token = data.data.token;
+                this.user = data.data.user;
+                sessionStorage.setItem('authToken', this.token);
+                sessionStorage.setItem('currentUser', JSON.stringify(this.user));
+                
+                return { success: true, message: data.message, user: data.data.user };
+            } else {
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            console.error('2FA verification error:', error);
+            return { 
+                success: false, 
+                message: error.message || 'Network error. Please check if the server is running.' 
+            };
+        }
     }
 }
 
@@ -307,10 +363,6 @@ class AuthFormHandlers {
             if (result.success) {
                 NotificationManager.show(result.message, 'success');
                 ModalManager.closeModal('registerModal');
-                // Optionally redirect to dashboard or show welcome message
-                setTimeout(() => {
-                    this.updateUIForAuthenticatedUser();
-                }, 1000);
                 return true;
             } else {
                 NotificationManager.show(result.message, 'error');
@@ -345,10 +397,16 @@ class AuthFormHandlers {
             if (result.success) {
                 NotificationManager.show(result.message, 'success');
                 ModalManager.closeModal('loginModal');
-                // Optionally redirect to dashboard
+                // Redirect to dashboard
                 setTimeout(() => {
-                    this.updateUIForAuthenticatedUser();
+                    window.location.href = './views/main.html';
                 }, 1000);
+                return true;
+            } else if (result.requiresTwoFactor) {
+                // 2FA is required
+                NotificationManager.show('Please enter your 2FA code', 'info');
+                ModalManager.closeModal('loginModal');
+                this.showTwoFactorModal(result.email);
                 return true;
             } else {
                 NotificationManager.show(result.message, 'error');
@@ -364,20 +422,35 @@ class AuthFormHandlers {
     // Update UI for authenticated user
     updateUIForAuthenticatedUser() {
         const user = this.authService.getCurrentUser();
-        if (user) {
+        const navActions = document.querySelector('.nav-actions');
+        
+        if (user && navActions) {
             // Update navigation to show user info and logout
-            const navActions = document.querySelector('.nav-actions');
-            if (navActions) {
-                navActions.innerHTML = `
-                    <div class="user-menu">
-                        <span class="user-greeting">Welcome, ${user.username}!</span>
-                        <button onclick="authFormHandlers.handleLogout()" class="btn btn-secondary">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
-                            Logout
-                        </button>
-                    </div>
-                `;
-            }
+            navActions.innerHTML = `
+                <div class="user-menu">
+                    <span class="user-greeting">Welcome, ${user.username}!</span>
+                    <button onclick="authFormHandlers.handleLogout()" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
+                        Logout
+                    </button>
+                </div>
+            `;
+        } else if (navActions) {
+            // Reset navigation to default (login/register buttons)
+            navActions.innerHTML = `
+                <button onclick="showLoginModal()" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                    Sign In
+                </button>
+                <button onclick="showRegisterModal()" class="btn btn-primary">
+                    <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>
+                    Sign Up
+                </button>
+                <!-- Mobile menu button -->
+                <button id="mobileMenuToggle" class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            `;
         }
     }
 
@@ -385,6 +458,71 @@ class AuthFormHandlers {
     handleLogout() {
         this.authService.logout();
         NotificationManager.show('You have been logged out successfully', 'info');
+    }
+
+    // Show two-factor modal
+    showTwoFactorModal(email) {
+        const emailElement = document.getElementById('twoFactorEmail');
+        if (emailElement) {
+            emailElement.textContent = `Please enter the 6-digit code from your Google Authenticator app for ${email}`;
+        }
+        
+        // Store email for 2FA verification
+        this.pendingTwoFactorEmail = email;
+        
+        ModalManager.showModal('twoFactorModal');
+        
+        // Focus on the input
+        setTimeout(() => {
+            const input = document.querySelector('#twoFactorForm input[name="twoFactorCode"]');
+            if (input) input.focus();
+        }, 100);
+    }
+
+    // Handle two-factor authentication
+    async handleTwoFactor(formData) {
+        const { twoFactorCode } = formData;
+        
+        if (!twoFactorCode || twoFactorCode.length !== 6) {
+            NotificationManager.show('Please enter a valid 6-digit code', 'error');
+            return false;
+        }
+
+        if (!this.pendingTwoFactorEmail) {
+            NotificationManager.show('Session expired. Please login again.', 'error');
+            ModalManager.closeModal('twoFactorModal');
+            return false;
+        }
+
+        const submitButton = document.querySelector('#twoFactorModal button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Verifying...';
+        submitButton.disabled = true;
+
+        try {
+            const result = await this.authService.verifyTwoFactorLogin({
+                email: this.pendingTwoFactorEmail,
+                token: twoFactorCode
+            });
+
+            if (result.success) {
+                NotificationManager.show('Login successful!', 'success');
+                ModalManager.closeModal('twoFactorModal');
+                this.pendingTwoFactorEmail = null;
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = './views/main.html';
+                }, 1000);
+                return true;
+            } else {
+                NotificationManager.show(result.message || 'Invalid verification code', 'error');
+                return false;
+            }
+        } finally {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        }
     }
 }
 
@@ -400,6 +538,9 @@ window.NotificationManager = NotificationManager;
 // Check authentication status on page load
 document.addEventListener('DOMContentLoaded', () => {
     if (authService.isAuthenticated()) {
+        authFormHandlers.updateUIForAuthenticatedUser();
+    } else {
+        // Ensure UI is reset when not authenticated
         authFormHandlers.updateUIForAuthenticatedUser();
     }
 });
