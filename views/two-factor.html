@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication - Social Hub Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    
+    <div id="layout-placeholder"></div>
+    
+    <!-- Main Content -->
+    <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                <h1 class="text-2xl font-bold text-white">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Two-Factor Authentication
+                </h1>
+                <p class="mt-1 text-sm text-white text-opacity-90">
+                    Add an extra layer of security to your account
+                </p>
+            </div>
+
+            <div class="p-6">
+                <!-- Setup 2FA Section -->
+                <div id="setup2FA" class="hidden">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800">
+                                    How to setup Google Authenticator
+                                </h3>
+                                <div class="mt-2 text-sm text-blue-700">
+                                    <ol class="list-decimal list-inside space-y-1">
+                                        <li>Download Google Authenticator app on your phone</li>
+                                        <li>Click "Generate QR Code" below</li>
+                                        <li>Scan the QR code with the app</li>
+                                        <li>Enter the 6-digit code to verify</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="generateQRButton" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-colors">
+                        <i class="fas fa-qrcode mr-2"></i>
+                        Generate QR Code
+                    </button>
+                </div>
+
+                <!-- QR Code Display -->
+                <div id="qrCodeSection" class="hidden">
+                    <div class="text-center mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Scan this QR Code</h3>
+                        <div id="qrCodeContainer" class="flex justify-center mb-4">
+                            <!-- QR Code will be displayed here -->
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                            <p class="text-sm text-gray-600 mb-2">Manual entry key:</p>
+                            <code id="manualKey" class="text-sm bg-white px-3 py-1 rounded border select-all"></code>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Enter 6-digit code from your app
+                            </label>
+                            <input 
+                                type="text" 
+                                id="verificationCode" 
+                                maxlength="6" 
+                                placeholder="123456" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center text-lg font-mono"
+                            >
+                        </div>
+                        <button id="verifyButton" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-colors">
+                            <i class="fas fa-check mr-2"></i>
+                            Verify and Enable 2FA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Disable 2FA Section -->
+                <div id="disable2FA" class="hidden">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    Disable Two-Factor Authentication
+                                </h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <p>This will remove the extra security layer from your account.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Enter your current password to confirm
+                            </label>
+                            <input 
+                                type="password" 
+                                id="currentPassword" 
+                                placeholder="Current password" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            >
+                        </div>
+                        <button id="disableButton" class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-red-700 transition-colors">
+                            <i class="fas fa-times mr-2"></i>
+                            Disable 2FA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert component -->
+    <div id="alertContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="text-center">
+                <i class="fas fa-spinner fa-spin text-2xl text-indigo-600 mb-4"></i>
+                <p class="text-gray-700">Processing...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../components/layout.js"></script>
+    <script src="../scripts/twofa.js"></script>
+    <script>
+
+    </script>
+</body>
+</html>
