@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Accounts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png">
+    <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body>
+    <div id="layout-placeholder"></div>
+    <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+        <div class="mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Social Media Accounts</h3>
+            <p class="text-gray-600">Connect your social media accounts to manage them all in one place</p>
+        </div>
+
+        <!-- Available Networks -->
+        <div class="mb-8">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">Available Networks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Mastodon Card -->
+                <div class="group border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 cursor-pointer" id="mastodon-connect-card">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fab fa-mastodon text-white text-2xl"></i>
+                        </div>
+                        <h5 class="font-semibold text-gray-900 mb-2">Mastodon</h5>
+                        <p class="text-sm text-gray-600 mb-4">Connect your Mastodon account</p>
+                        <button onclick="connectMastodon()" class="btn-primary text-sm">
+                            <i class="fas fa-plus mr-2"></i>
+                            Connect
+                        </button>
+                    </div>
+                </div>
+                <!-- Reddit Card -->
+                <div class="group border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 cursor-pointer" id="reddit-connect-card">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fab fa-reddit text-white text-2xl"></i>
+                        </div>
+                        <h5 class="font-semibold text-gray-900 mb-2">Reddit</h5>
+                        <p class="text-sm text-gray-600 mb-4">Connect your Reddit account</p>
+                        <button onclick="connectReddit()" class="btn-primary text-sm">
+                            <i class="fas fa-plus mr-2"></i>
+                            Connect
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connected Accounts -->
+        <div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">Connected Accounts</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="connected-accounts-list">
+                <!-- Connected accounts will be loaded here -->
+                <div class="text-center py-8 col-span-full">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-link text-gray-400 text-xl"></i>
+                    </div>
+                    <p class="text-gray-500">No accounts connected yet</p>
+                    <p class="text-sm text-gray-400">Connect your first social media account to get started</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../scripts/accounts.js"></script>
+    <script src="../scripts/connect-mastodon.js"></script>
+    <script src="../scripts/connect-reddit.js"></script>
+    <script src="../components/layout.js"></script>
+    
+    <script>
+        // Call after all scripts and layout are loaded
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                loadConnectedAccounts();
+            }, 300); // slight delay to ensure layout is ready
+        });
+    </script>
+</body>
+</html>
