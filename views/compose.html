@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Post</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/compose.css" rel="stylesheet">
+</head>
+<body>
+    <div id="layout-placeholder"></div>
+    
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+        <!-- Header Section with Tabs -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+            <h3 class="text-2xl font-bold text-white mb-1">Create New Post</h3>
+            <p class="text-indigo-100">Share your thoughts across your social networks</p>
+        </div>
+        
+        <div class="p-6">
+            <form id="compose-form" class="space-y-8">
+                <!-- Social Networks Selection -->
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium mr-4">Post to:</span>
+                    </div>
+
+                    <!-- Mastodon -->
+                    <label id="mastodon-card" class="social-network-card mastodon disabled">
+                        <input type="checkbox" name="social_network" value="mastodon" class="sr-only" disabled>
+                        <div class="p-3 px-4 rounded-full bg-gray-100 border border-gray-200 flex items-center opacity-60 cursor-not-allowed">
+                            <i class="fab fa-mastodon text-gray-500 text-xl mr-2"></i>
+                            <span class="font-medium text-gray-500">Mastodon</span>
+                        </div>
+                    </label>
+
+                    <!-- Reddit -->
+                    <label id="reddit-card" class="social-network-card reddit disabled">
+                        <input type="checkbox" name="social_network" value="reddit" class="sr-only" disabled>
+                        <div class="p-3 px-4 rounded-full bg-gray-100 border border-gray-200 flex items-center opacity-60 cursor-not-allowed">
+                            <i class="fab fa-reddit text-gray-500 text-xl mr-2"></i>
+                            <span class="font-medium text-gray-500">Reddit</span>
+                        </div>
+                    </label>
+                    
+                    <!-- LinkedIn -->
+                    <label id="linkedin-card" class="social-network-card linkedin disabled">
+                        <input type="checkbox" name="social_network" value="linkedin" class="sr-only" disabled>
+                        <div class="p-3 px-4 rounded-full bg-gray-100 border border-gray-200 flex items-center opacity-60 cursor-not-allowed">
+                            <i class="fab fa-linkedin-in text-gray-500 text-xl mr-2"></i>
+                            <span class="font-medium text-gray-500">LinkedIn</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- LinkedIn Company Selection -->
+                <div id="linkedin-company-container" class="mt-4 hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Post as LinkedIn
+                    </label>
+                    <select id="linkedin-company" name="linkedin-company" class="form-select block w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="personal">Post as personal profile</option>
+                        <!-- Company option will be added dynamically -->
+                    </select>
+                </div>
+
+                <!-- Post Content -->
+                <div class="post-editor-container bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="p-4">
+                        <textarea id="post-content" name="content" rows="5" class="w-full bg-transparent border-none resize-none focus:ring-0 text-lg" placeholder="What's on your mind?"></textarea>
+                    </div>
+                    
+                    <!-- Media Preview Area -->
+                    <div id="media-preview" class="hidden p-4 border-t border-gray-200">
+                        <div class="flex items-center justify-center bg-gray-100 rounded-lg relative overflow-hidden" style="height: 200px;">
+                            <img id="media-preview-image" class="max-h-full max-w-full object-contain" src="" alt="">
+                            <button type="button" id="remove-media" class="absolute top-2 right-2 bg-gray-800 bg-opacity-70 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Editor Toolbar -->
+                    <div class="flex items-center justify-between bg-white p-3 border-t border-gray-200">
+                        <div class="flex space-x-3">
+                            <button type="button" id="attach-media-btn" class="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors">
+                                <i class="fas fa-image"></i>
+                                <span class="sr-only">Attach Image</span>
+                            </button>
+                            <input type="file" id="media-upload" accept="image/*" class="hidden">
+                            
+                            <button type="button" class="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors">
+                                <i class="fas fa-poll-h"></i>
+                                <span class="sr-only">Add Poll</span>
+                            </button>
+                            
+                            <button type="button" class="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors">
+                                <i class="far fa-smile"></i>
+                                <span class="sr-only">Emoji</span>
+                            </button>
+                        </div>
+                        
+                        <div class="text-sm font-medium text-gray-500" id="character-counter">
+                            <span id="char-count">0</span>/500
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Publishing Options -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4">Publishing Options</h4>
+                    
+                    <div class="space-y-4">
+                        <!-- Publish Now Option -->
+                        <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-indigo-300 transition-colors">
+                            <input type="radio" name="publish-option" value="now" class="form-radio h-5 w-5 text-indigo-600" checked>
+                            <span class="ml-3">
+                                <span class="block font-medium text-gray-800">Publish now</span>
+                                <span class="block text-sm text-gray-500">Post immediately to selected networks</span>
+                            </span>
+                        </label>
+                        
+                        <!-- Add to Queue Option -->
+                        <div>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-indigo-300 transition-colors">
+                                <input type="radio" name="publish-option" value="queue" class="form-radio h-5 w-5 text-indigo-600">
+                                <span class="ml-3">
+                                    <span class="block font-medium text-gray-800">Add to queue</span>
+                                    <span class="block text-sm text-gray-500">Select a day and time for your posting schedule</span>
+                                </span>
+                            </label>
+                            
+                            <!-- Queue Details - shown when "Add to queue" is selected -->
+                            <div id="queue-details" class="hidden mt-3 ml-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-3 rounded-lg border border-blue-200">
+                                        <label for="queue-day-select" class="block text-sm font-medium text-gray-700 mb-1">Day of Week</label>
+                                        <select id="queue-day-select" class="form-select block w-full border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                            <option value="1">Monday</option>
+                                            <option value="2">Tuesday</option>
+                                            <option value="3">Wednesday</option>
+                                            <option value="4">Thursday</option>
+                                            <option value="5">Friday</option>
+                                            <option value="6">Saturday</option>
+                                            <option value="0">Sunday</option>
+                                        </select>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-lg border border-blue-200">
+                                        <label for="queue-time-input" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                        <input type="time" id="queue-time-input" class="form-input w-full border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start mt-3 pt-3 border-t border-blue-200">
+                                    <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+                                    <p class="text-sm text-blue-700">
+                                        Your post will be added to the queue for the selected day and time. You can view and manage your schedule in the <a href="schedule.html" class="underline">Schedule</a> section.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Schedule for Specific Time Option -->
+                        <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-indigo-300 transition-colors">
+                            <input type="radio" name="publish-option" value="schedule" class="form-radio h-5 w-5 text-indigo-600">
+                            <span class="ml-3">
+                                <span class="block font-medium text-gray-800">Schedule for specific time</span>
+                                <span class="block text-sm text-gray-500">Choose exact date and time</span>
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Schedule Date/Time (hidden by default) -->
+                    <div id="schedule-datetime" class="mt-4 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-3 rounded-lg border border-gray-200">
+                                <label for="schedule-day" class="block text-sm font-medium text-gray-700 mb-1">Day of Week</label>
+                                <select id="schedule-day" class="form-select block w-full border-gray-200 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value="1">Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thursday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
+                                    <option value="0">Sunday</option>
+                                </select>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-gray-200">
+                                <label for="schedule-time" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                <input type="time" id="schedule-time" class="form-input w-full border-gray-200 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div id="post-preview-section" class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4">Post Preview</h4>
+                    
+                    <div class="bg-white rounded-lg border border-gray-200 p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
+                                U
+                            </div>
+                            <div class="ml-3">
+                                <div class="font-medium">Your Account</div>
+                                <div class="text-sm text-gray-500">@your_username</div>
+                            </div>
+                        </div>
+                        
+                        <div id="preview-content" class="text-gray-800">
+                            <p class="text-gray-400 italic">Your post preview will appear here</p>
+                        </div>
+                        
+                        <div id="preview-media" class="hidden mt-3 rounded-lg overflow-hidden">
+                            <img id="preview-media-img" src="" alt="Preview" class="w-full h-auto">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Publish Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast notification for success/error messages -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 hidden">
+        <div class="bg-white shadow-lg rounded-lg p-4 flex items-center border-l-4 min-w-[300px]">
+            <i id="toast-icon" class="mr-3 text-lg"></i>
+            <div id="toast-message"></div>
+            <button onclick="closeToast()" class="ml-auto text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../components/compose.js"></script>
+    <script src="../components/layout.js"></script>
+    <script src="../utils/auth.js"></script>
+    <script>
+        // Dynamically enable/disable social networks based on connection status
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = sessionStorage.getItem('authToken');
+            if (!token) return;
+
+            try {
+                const response = await fetch('http://localhost:3001/api/accounts', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const connectedAccounts = data.data.map(account => account.provider.toLowerCase());
+                    if (connectedAccounts.includes('mastodon')) {
+                        const mastodonCard = document.getElementById('mastodon-card');
+                        mastodonCard.classList.remove('disabled');
+                        mastodonCard.querySelector('input').disabled = false;
+                        mastodonCard.querySelector('.p-3').classList.replace('bg-gray-100', 'bg-purple-100');
+                        mastodonCard.querySelector('.p-3').classList.replace('border-gray-200', 'border-purple-200');
+                        mastodonCard.querySelector('.p-3').classList.replace('opacity-60', 'opacity-100');
+                        mastodonCard.querySelector('.p-3').classList.replace('cursor-not-allowed', 'cursor-pointer');
+                        mastodonCard.querySelector('i').classList.replace('text-gray-500', 'text-purple-600');
+                        mastodonCard.querySelector('span').classList.replace('text-gray-500', 'text-purple-700');
+                    }
+                    if (connectedAccounts.includes('reddit')) {
+                        const redditCard = document.getElementById('reddit-card');
+                        redditCard.classList.remove('disabled');
+                        redditCard.querySelector('input').disabled = false;
+                        redditCard.querySelector('.p-3').classList.replace('bg-gray-100', 'bg-orange-100');
+                        redditCard.querySelector('.p-3').classList.replace('border-gray-200', 'border-orange-200');
+                        redditCard.querySelector('.p-3').classList.replace('opacity-60', 'opacity-100');
+                        redditCard.querySelector('.p-3').classList.replace('cursor-not-allowed', 'cursor-pointer');
+                        redditCard.querySelector('i').classList.replace('text-gray-500', 'text-orange-600');
+                        redditCard.querySelector('span').classList.replace('text-gray-500', 'text-orange-700');
+                    }
+                    if (connectedAccounts.includes('linkedin')) {
+                        const linkedinCard = document.getElementById('linkedin-card');
+                        linkedinCard.classList.remove('disabled');
+                        linkedinCard.querySelector('input').disabled = false;
+                        linkedinCard.querySelector('.p-3').classList.replace('bg-gray-100', 'bg-blue-100');
+                        linkedinCard.querySelector('.p-3').classList.replace('border-gray-200', 'border-blue-200');
+                        linkedinCard.querySelector('.p-3').classList.replace('opacity-60', 'opacity-100');
+                        linkedinCard.querySelector('.p-3').classList.replace('cursor-not-allowed', 'cursor-pointer');
+                        linkedinCard.querySelector('i').classList.replace('text-gray-500', 'text-blue-600');
+                        linkedinCard.querySelector('span').classList.replace('text-gray-500', 'text-blue-700');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching connected accounts:', error);
+            }
+        });
+    </script>
+</body>
+</html>
