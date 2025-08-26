@@ -57,19 +57,33 @@ function displayConnectedAccounts(accounts) {
 
     container.innerHTML = '';
 
-    // Detect if Mastodon or Reddit is already connected
+    // Detect which platforms are already connected
     const mastodonConnected = accounts.some(acc => acc.provider && acc.provider.toLowerCase() === 'mastodon');
     const redditConnected = accounts.some(acc => acc.provider && acc.provider.toLowerCase() === 'reddit');
+    const linkedinConnected = accounts.some(acc => acc.provider && acc.provider.toLowerCase() === 'linkedin');
+
+    console.log('Connection status:', { mastodonConnected, redditConnected, linkedinConnected });
 
     // Hide Mastodon connect button if already connected
     const mastodonBtn = document.querySelector('#mastodon-connect-card button');
     if (mastodonBtn) {
         mastodonBtn.style.display = mastodonConnected ? 'none' : '';
     }
+    
     // Hide Reddit connect button if already connected
     const redditBtn = document.querySelector('#reddit-connect-card button');
     if (redditBtn) {
         redditBtn.style.display = redditConnected ? 'none' : '';
+    }
+    
+    // Hide LinkedIn connect button if already connected
+    const linkedinBtn = document.querySelector('#linkedin-connect-card button');
+    if (linkedinBtn) {
+        console.log('LinkedIn button found:', linkedinBtn);
+        console.log('Setting display to:', linkedinConnected ? 'none' : '');
+        linkedinBtn.style.display = linkedinConnected ? 'none' : '';
+    } else {
+        console.warn('LinkedIn button not found in the DOM');
     }
 
     if (!accounts || accounts.length === 0) {
@@ -80,20 +94,40 @@ function displayConnectedAccounts(accounts) {
     accounts.forEach(account => {
         const el = document.createElement('div');
         el.className = 'bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300';
+        
+        // Determine correct color scheme and icon based on provider
+        let bgColorClass, faIcon;
+        switch(account.provider.toLowerCase()) {
+            case 'reddit':
+                bgColorClass = 'bg-gradient-to-r from-orange-500 to-yellow-500';
+                faIcon = 'fa-reddit';
+                break;
+            case 'linkedin':
+                bgColorClass = 'bg-gradient-to-r from-blue-500 to-blue-700';
+                faIcon = 'fa-linkedin-in';
+                break;
+            case 'mastodon':
+            default:
+                bgColorClass = 'bg-gradient-to-r from-purple-500 to-indigo-600';
+                faIcon = 'fa-mastodon';
+                break;
+        }
+
+        // Format the username to show with @ prefix if it doesn't already have it
+        let displayUsername = account.username;
+        if (displayUsername && !displayUsername.startsWith('@')) {
+            displayUsername = '@' + displayUsername;
+        }
 
         el.innerHTML = `
             <div class="p-5">
                 <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 ${
-                        account.provider.toLowerCase() === 'reddit'
-                            ? 'bg-gradient-to-r from-orange-500 to-yellow-500'
-                            : 'bg-gradient-to-r from-purple-500 to-indigo-600'
-                    } rounded-lg flex items-center justify-center text-white text-lg mr-3">
-                        <i class="fab fa-${account.provider.toLowerCase()}"></i>
+                    <div class="w-12 h-12 ${bgColorClass} rounded-lg flex items-center justify-center text-white text-lg mr-3">
+                        <i class="fab ${faIcon}"></i>
                     </div>
                     <div>
-                        <h5 class="font-medium text-gray-900">@${account.username}</h5>
-                        <p class="text-sm text-gray-500">${account.instance_url || ''}</p>
+                        <h5 class="font-medium text-gray-900">${displayUsername || account.provider + ' User'}</h5>
+                        <p class="text-sm text-gray-500">${account.instance_url || 'https://www.linkedin.com'}</p>
                     </div>
                 </div>
 
