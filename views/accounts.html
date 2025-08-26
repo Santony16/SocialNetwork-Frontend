@@ -50,6 +50,20 @@
                         </button>
                     </div>
                 </div>
+                <!-- LinkedIn Card -->
+                <div class="group border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 cursor-pointer" id="linkedin-connect-card">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <i class="fab fa-linkedin-in text-white text-2xl"></i>
+                        </div>
+                        <h5 class="font-semibold text-gray-900 mb-2">LinkedIn</h5>
+                        <p class="text-sm text-gray-600 mb-4">Connect your LinkedIn account</p>
+                        <button onclick="connectLinkedIn()" class="btn-primary text-sm">
+                            <i class="fas fa-plus mr-2"></i>
+                            Connect
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -71,6 +85,7 @@
     <script src="../scripts/accounts.js"></script>
     <script src="../scripts/connect-mastodon.js"></script>
     <script src="../scripts/connect-reddit.js"></script>
+    <script src="../scripts/connect-linkedin.js"></script>
     <script src="../components/layout.js"></script>
     <script src="../utils/auth.js"></script>
     <script>
