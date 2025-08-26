@@ -1,0 +1,91 @@
+/* Compose page specific styles */
+
+/* Social network cards */
+.social-network-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.social-network-card.selected div {
+    border-color: rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.social-network-card input:focus + div {
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.social-network-card span.ml-2 {
+    display: none;
+}
+
+.social-network-card.selected span.ml-2 {
+    display: flex;
+}
+
+/* Post editor enhancements */
+.post-editor-container {
+    transition: all 0.3s ease;
+}
+
+.post-editor-container:focus-within {
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+    border-color: rgba(124, 58, 237, 0.4);
+}
+
+textarea#post-content {
+    line-height: 1.5;
+}
+
+/* Character counter */
+#character-counter.warning {
+    color: #f59e0b;
+}
+
+#character-counter.danger {
+    color: #ef4444;
+}
+
+/* Post preview section animation */
+#preview-content, #preview-media {
+    transition: all 0.3s ease;
+}
+
+/* Toast notification animation */
+#toast-notification {
+    transition: all 0.3s ease;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+#toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+#toast-notification.success {
+    border-color: #10b981;
+}
+
+#toast-notification.success i {
+    color: #10b981;
+}
+
+#toast-notification.error {
+    border-color: #ef4444;
+}
+
+#toast-notification.error i {
+    color: #ef4444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .post-editor-container {
+        border-radius: 0.5rem;
+    }
+    
+    .bg-gradient-to-r {
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+}

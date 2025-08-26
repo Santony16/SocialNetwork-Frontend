@@ -938,3 +938,44 @@ footer {
     line-height: 1.1;
   }
 }
+
+/* OAuth Button Styles */
+.oauth-button {
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.oauth-button:hover {
+  background-color: #f9fafb !important;
+  border-color: #9ca3af !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.oauth-button:active {
+  transform: translateY(0);
+}
+
+.oauth-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* OAuth separator line styling */
+hr {
+  margin: 1rem 0;
+}
+
+/* OAuth responsive adjustments */
+@media (max-width: 640px) {
+  .oauth-button {
+    font-size: 0.8rem;
+    padding: 0.65rem !important;
+  }
+  
+  .oauth-button svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
